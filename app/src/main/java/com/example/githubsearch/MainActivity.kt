@@ -60,9 +60,7 @@ class MainActivity : ComponentActivity() {
                             value = query,
                             onValueChange = {
                                 query = it
-                                if(it.isNotBlank()){
                                     gitHubViewModel.searchUsers(it)
-                                }
 
                             },
                             shape = RoundedCornerShape(18.dp),

@@ -24,19 +24,42 @@ class GitHubUserViewModel @Inject constructor(private val gitHubRepository: GitH
     val query = MutableStateFlow("")
     val isLoading = gitHubRepository.isLoading
 
+
+
     init {
-        viewModelScope.launch {
-            query.filter { it.isNotEmpty() }
-                .distinctUntilChanged()
+    /*    viewModelScope.launch {
+
+            query
                 .debounce(1000)
-                .collectLatest { query ->
-                    hitApi(query)
+                .distinctUntilChanged()
+                .collectLatest { q ->
+
+                    if (q.isBlank()) {
+                        gitHubRepository.clearUsers()
+                    } else {
+                        hitApi(q)
+                    }
+
                 }
+        }*/
 
-
+        viewModelScope.launch {
+            query
+                .debounce(1000)
+                .distinctUntilChanged()
+//                .filter { it.isNotBlank() }
+                .collectLatest { q ->
+                    if (q.isBlank()) {
+                        gitHubRepository.clearUsers()
+                    } else {
+                        runCatching { hitApi(q) }
+                            .onFailure { /* handle error */ }
+                    }
+                }
         }
 
     }
+
 
   /*  filter → removes empty queries
     distinctUntilChanged → prevents duplicate queries

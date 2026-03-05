@@ -32,4 +32,9 @@ class GitHubRepository @Inject constructor(
             }
         }
     }
+
+    fun clearUsers(){
+        _usersList.value = emptyList()
+    }
 }
+
